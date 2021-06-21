@@ -167,8 +167,11 @@ export default {
             inOrOut: res.data.inOrOut
           }
           this.drawer.mode = 'none'
-          this.drawer.polygon = res.data.point
-          this.map.position = res.data.point[0]
+          const coordinates = res.data.point.coordinates[0]
+          coordinates.pop()
+          console.log(coordinates)
+          this.drawer.polygon = coordinates
+          this.map.position = coordinates[0]
           this.edit = true
         })
       }
