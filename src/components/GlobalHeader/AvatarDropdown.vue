@@ -6,9 +6,13 @@
     </span>
     <template v-slot:overlay>
       <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
+        <a-menu-item key="logout" @click="handleToCenter">
+          <a-icon type="edit" />
+          修改密码
+        </a-menu-item>
         <a-menu-item key="logout" @click="handleLogout">
           <a-icon type="logout" />
-          {{ $t('menu.account.logout') }}
+          退出登录
         </a-menu-item>
       </a-menu>
     </template>
@@ -36,9 +40,6 @@ export default {
   methods: {
     handleToCenter () {
       this.$router.push({ path: '/account/center' })
-    },
-    handleToSettings () {
-      this.$router.push({ path: '/account/settings' })
     },
     handleLogout (e) {
       Modal.confirm({

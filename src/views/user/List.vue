@@ -59,7 +59,7 @@
             :src="record.img"
             width="100px"
           />
-          <div v-else>未采集人脸</div>
+          <div v-else>卡号：{{ record.ic_card }}</div>
         </template>
         <template slot="action" slot-scope="text, record">
           <a-icon
@@ -155,7 +155,7 @@ export default {
             dataIndex: 'name'
           },
           {
-            title: '图片',
+            title: '通行方式',
             dataIndex: 'img',
             scopedSlots: { customRender: 'img' }
           },

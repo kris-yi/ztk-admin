@@ -6,7 +6,8 @@ const api = {
   info: '/admin/user/info',
   edit: '/admin/user/edit',
   delete: '/admin/user/delete',
-  clockList: '/admin/user/clock_list'
+  clockList: '/admin/user/clock_list',
+  updatePassword: '/admin/update_password'
 }
 
 export function getUserList (parameter) {
@@ -54,5 +55,13 @@ export function getClockList (params) {
     url: api.clockList,
     method: 'get',
     params: params
+  })
+}
+
+export function updatePassword (params) {
+  return request({
+    url: api.updatePassword,
+    method: 'post',
+    data: params
   })
 }

@@ -34,9 +34,9 @@
         </a-input-password>
       </a-form-item>
 
-      <a-form-item>
-        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住我</a-checkbox>
-      </a-form-item>
+      <!--      <a-form-item>-->
+      <!--        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住我</a-checkbox>-->
+      <!--      </a-form-item>-->
 
       <a-form-item style="margin-top:24px">
         <a-button

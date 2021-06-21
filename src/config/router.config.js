@@ -66,6 +66,13 @@ export const asyncRouterMap = [
         hidden: true,
         component: () => import('@/views/device/Add'),
         meta: { title: '新增设备', keepAlive: true, permission: ['dashboard'] }
+      },
+      {
+        path: '/account/center',
+        name: 'UserCenter',
+        hidden: true,
+        component: () => import('@/views/user/Center'),
+        meta: { title: '修改密码', keepAlive: true, permission: ['dashboard'] }
       }
     ]
   },
