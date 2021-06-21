@@ -110,13 +110,12 @@ export default {
       this.isLoginError = false
     },
     requestFailed (err) {
-      console.log(err)
-      // this.isLoginError = true
-      // this.$notification['error']({
-      //   message: '错误',
-      //   description: err.errors[0].detail[0] || '请求出现错误，请稍后再试',
-      //   duration: 4
-      // })
+      this.isLoginError = true
+      this.$notification['error']({
+        message: '错误',
+        description: err.msg || '请求出现错误，请稍后再试',
+        duration: 4
+      })
     }
   }
 }
