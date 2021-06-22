@@ -34,6 +34,22 @@
                 {{ value.value }}
               </a-radio-button>
             </a-radio-group>
+            <a-upload
+              v-if="item.type==='upload'"
+              name="file"
+              list-type="picture-card"
+              class="avatar-uploader"
+              :show-upload-list="false"
+              :customRequest="customRequest"
+            >
+              <img v-if="imageUrl" :src="imageUrl" alt="avatar" width="200"/>
+              <div v-else>
+                <a-icon :type="imgLoading ? 'loading' : 'plus'"/>
+                <div class="ant-upload-text">
+                  Upload
+                </div>
+              </div>
+            </a-upload>
           </a-form-model-item>
           <a-form-model-item
             :wrapper-col="{ span: 24}"
@@ -55,6 +71,7 @@
 
 <script>
 import { addUser, userInfo, editUser } from '@/api/user'
+import { upload } from '@/api/upload'
 
 export default {
   name: 'Add',
@@ -70,6 +87,12 @@ export default {
           type: 'input',
           wrapperCol: 12,
           validate: true
+        },
+        {
+          label: '图片',
+          prop: 'img',
+          type: 'upload',
+          wrapperCol: 12
         },
         {
           label: '身份证号',
@@ -126,7 +149,9 @@ export default {
           { required: true, message: '请选择性别', trigger: 'blur' }
         ]
       },
-      edit: false
+      edit: false,
+      imgLoading: false,
+      imageUrl: ''
     }
   },
   mounted () {
@@ -146,8 +171,10 @@ export default {
             phone: res.data.phone,
             mobile: res.data.mobile,
             address: res.data.address,
-            pin: res.data.pin
+            pin: res.data.pin,
+            img: res.data.img
           }
+          this.imageUrl = process.env.VUE_APP_URL + res.data.img
           this.edit = true
           this.loading = false
         })
@@ -189,6 +216,17 @@ export default {
             })
           }
         }
+      })
+    },
+    customRequest (options) {
+      this.imageUrl = ''
+      this.imgLoading = true
+      const params = new FormData()
+      params.append('file', options.file)
+      upload(params).then(res => {
+        this.insertForm.img = res.data.path
+        this.imageUrl = process.env.VUE_APP_URL + res.data.path
+        this.imgLoading = false
       })
     }
   }

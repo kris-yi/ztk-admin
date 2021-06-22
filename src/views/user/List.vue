@@ -56,10 +56,10 @@
         <template slot="img" slot-scope="text, record">
           <img
             v-if="record.img"
-            :src="record.img"
+            :src="domain+record.img"
             width="100px"
           />
-          <div v-else>卡号：{{ record.ic_card }}</div>
+          <div v-else>{{ record.ic_card }}</div>
         </template>
         <template slot="action" slot-scope="text, record">
           <a-icon
@@ -155,7 +155,7 @@ export default {
             dataIndex: 'name'
           },
           {
-            title: '通行方式',
+            title: '图片',
             dataIndex: 'img',
             scopedSlots: { customRender: 'img' }
           },
@@ -201,7 +201,8 @@ export default {
         props: {
           loading: false
         }
-      }
+      },
+      domain: process.env.VUE_APP_URL
     }
   },
   mounted () {
@@ -211,7 +212,6 @@ export default {
     getList () {
       this.tableData.loading = true
       getUserList(this.filter.data).then(res => {
-        console.log(res.data)
         this.tableData.list = res.data.list
         const pagination = res.data.pagination
         this.tableData.pagination = {
