@@ -30,12 +30,12 @@
               <a-select-option
                 value="上岛"
               >
-                上岛
+                岛方向
               </a-select-option>
               <a-select-option
                 value="离岛"
               >
-                离岛
+                岸方向
               </a-select-option>
             </a-select>
             <amap
@@ -117,7 +117,7 @@ export default {
           validate: true
         },
         {
-          label: '上/离岛',
+          label: '位置',
           prop: 'inOrOut',
           type: 'select',
           wrapperCol: 20,
@@ -203,6 +203,8 @@ export default {
               setTimeout(() => {
                 this.$router.push({ name: 'MapList' })
               }, 1000)
+            }).catch(() => {
+              this.submit = false
             })
           } else {
             editInfo(this.insertForm).then(res => {
@@ -219,6 +221,8 @@ export default {
               setTimeout(() => {
                 this.$router.push({ name: 'MapList' })
               }, 1000)
+            }).catch(() => {
+              this.submit = false
             })
           }
         }

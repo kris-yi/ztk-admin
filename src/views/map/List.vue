@@ -11,6 +11,10 @@
         :pagination="tableData.pagination"
         :rowKey="(record,index)=>{return index}"
       >
+        <template slot="inOrOut" slot-scope="text, record">
+          <span v-if="record.inOrOut==='上岛'">岛方向</span>
+          <span v-if="record.inOrOut==='离岛'">岸方向</span>
+        </template>
         <template slot="action" slot-scope="text, record">
           <a-icon
             type="edit"
@@ -53,7 +57,8 @@ export default {
           },
           {
             title: '上/离岛',
-            dataIndex: 'inOrOut'
+            dataIndex: 'inOrOut',
+            scopedSlots: { customRender: 'inOrOut' }
           },
           {
             title: '操作',
@@ -117,6 +122,9 @@ export default {
         this.deleteVisible = false
         this.okButtonProps.props.loading = false
         this.list()
+      }).catch(() => {
+        this.okButtonProps.props.loading = false
+        this.deleteVisible = false
       })
     },
     onDelete (record) {

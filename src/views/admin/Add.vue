@@ -22,18 +22,19 @@
               :placeholder="`请输入${item.label}`"
               v-model="insertForm[item.prop]"
             />
-            <a-radio-group
-              v-if="item.type==='radio'"
+            <a-select
+              v-if="item.type==='select'"
+              :placeholder="`请选择${item.label}`"
               v-model="insertForm[item.prop]"
             >
-              <a-radio-button
-                v-for="(value,valIndex) in item.option"
-                :value="value.key"
-                :key="valIndex"
+              <a-select-option
+                v-for="(selectItem,selectIndex) in item.option"
+                :key="selectIndex"
+                :value="selectItem.key"
               >
-                {{ value.value }}
-              </a-radio-button>
-            </a-radio-group>
+                {{ selectItem.value }}
+              </a-select-option>
+            </a-select>
           </a-form-model-item>
           <a-form-model-item
             :wrapper-col="{ span: 24}"
@@ -54,7 +55,7 @@
 </template>
 
 <script>
-import { addDevice } from '@/api/device'
+import { addAdmin, editAdmin, getDetail } from '@/api/admin'
 
 export default {
   name: 'Add',
@@ -65,74 +66,40 @@ export default {
       satellite: false,
       form: [
         {
-          label: '设备编号',
-          prop: 'sn',
+          label: '昵称',
+          prop: 'nickname',
           type: 'input',
           wrapperCol: 12,
           validate: true
         },
         {
-          label: '设备类型',
-          prop: 'type',
-          type: 'radio',
-          wrapperCol: 12,
-          option: [
-            {
-              key: '打卡机',
-              value: '打卡机'
-            },
-            {
-              key: 'gps',
-              value: 'GPS'
-            }
-          ],
-          validate: true
-        },
-        {
-          label: '船只名称',
-          prop: 'device_name',
+          label: '账户名',
+          prop: 'name',
           type: 'input',
-          wrapperCol: 12,
-          validate: true
+          wrapperCol: 12
         },
         {
-          label: '备注',
-          prop: 'remark',
-          type: 'radio',
-          wrapperCol: 12,
-          option: [
-            {
-              key: '上船',
-              value: '上船'
-            },
-            {
-              key: '下船',
-              value: '下船'
-            },
-            {
-              key: '定位',
-              value: '定位'
-            }
-          ],
-          validate: true
+          label: '密码',
+          prop: 'password',
+          type: 'input',
+          wrapperCol: 12
         }
       ],
       insertForm: {},
       insertFormRules: {
-        sn: [
-          { required: true, message: '请输入设备编号', trigger: 'blur' }
+        nickname: [
+          { required: true, message: '请输入昵称', trigger: 'blur' }
         ],
-        type: [
-          { required: true, message: '请选择设备类型', trigger: 'blur' }
+        name: [
+          { required: true, message: '请输入账户名', trigger: 'blur' }
         ],
-        device_name: [
-          { required: true, message: '请输入船只名称', trigger: 'blur' }
-        ],
-        remark: [
-          { required: true, message: '请选择备注', trigger: 'blur' }
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       },
-      edit: false
+      edit: false,
+      imgLoading: false,
+      imageUrl: ''
     }
   },
   mounted () {
@@ -143,6 +110,12 @@ export default {
       const query = this.$route.query
       if (Object.keys(query).length > 0) {
         this.loading = true
+        getDetail({ id: query.id }).then(res => {
+          this.insertForm = res.data
+          this.edit = true
+          this.loading = false
+          this.insertFormRules.password[0].required = false
+        })
       }
     },
     handleSubmit (e) {
@@ -151,7 +124,7 @@ export default {
         if (valid) {
           this.submit = true
           if (!this.edit) {
-            addDevice(this.insertForm).then(res => {
+            addAdmin(this.insertForm).then(res => {
               this.submit = false
               if (res.status) {
                 this.$notification.error({
@@ -162,10 +135,24 @@ export default {
               this.$notification.success({
                 message: '新增成功'
               })
-              setTimeout(() => {
-                this.$router.push({
-                  name: 'DeviceList'
+              this.$router.push({ name: 'adminList' })
+            }).catch(() => {
+              this.submit = false
+            })
+          } else {
+            editAdmin(this.insertForm).then(res => {
+              if (res.status) {
+                this.$notification.error({
+                  message: res.msg
                 })
+                return
+              }
+              this.submit = false
+              this.$notification.success({
+                message: '更新成功'
+              })
+              setTimeout(() => {
+                this.$router.push('/admin/list')
               }, 1000)
             }).catch(() => {
               this.submit = false

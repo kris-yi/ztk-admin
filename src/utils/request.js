@@ -18,15 +18,33 @@ const errorHandler = (error) => {
     const data = error.response.data
     // 从 localstorage 获取 token
     const token = storage.get(ACCESS_TOKEN)
-    if (error.response.status === 500 && data.message === '验证失败') {
-      notification.error({
-        message: 'Forbidden',
-        description: data.message
-      })
-      store.dispatch('Logout').then(() => {
+    if (error.response.status === 500) {
+      if (data.message === '验证失败') {
+        notification.error({
+          message: '提示',
+          description: '验证失败'
+        })
+        if (token) {
+          store.dispatch('Logout').then(() => {
+            setTimeout(() => {
+              window.location.href = '/user/login'
+            }, 1500)
+          })
+        }
         setTimeout(() => {
           window.location.href = '/user/login'
         }, 1500)
+      }
+      if (data.message === '无权限') {
+        notification.error({
+          message: '提示',
+          description: '无权限'
+        })
+        return
+      }
+      notification.error({
+        message: 'Forbidden',
+        description: data.message
       })
     }
     if (error.response.status === 403) {
@@ -43,10 +61,13 @@ const errorHandler = (error) => {
       if (token) {
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
-            window.location.reload()
+            window.location.href = '/user/login'
           }, 1500)
         })
       }
+      setTimeout(() => {
+        window.location.href = '/user/login'
+      }, 1500)
     }
   }
   return Promise.reject(error)

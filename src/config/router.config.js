@@ -19,13 +19,13 @@ export const asyncRouterMap = [
         path: '/dashboard/workplace',
         name: 'Workplace',
         component: () => import('@/views/dashboard/Workplace'),
-        meta: { title: '首页', keepAlive: true, permission: ['dashboard'] }
+        meta: { title: '首页', keepAlive: true, icon: 'home', permission: ['dashboard'] }
       },
       {
         path: '/user/list',
         name: 'userList',
         component: () => import('@/views/user/List'),
-        meta: { title: '居民管理', keepAlive: true, permission: ['dashboard'] }
+        meta: { title: '居民管理', keepAlive: true, icon: 'unordered-list', permission: ['dashboard'] }
       },
       {
         path: '/user/add',
@@ -35,10 +35,16 @@ export const asyncRouterMap = [
         meta: { title: '新增居民', keepAlive: true, permission: ['dashboard'] }
       },
       {
+        path: '/clock_list',
+        name: 'clockList',
+        component: () => import('@/views/clock/List'),
+        meta: { title: '乘船记录', keepAlive: true, icon: 'medicine-box', permission: ['dashboard'] }
+      },
+      {
         path: '/map',
         name: 'MapList',
         component: () => import('@/views/map/List'),
-        meta: { title: '电子围栏', keepAlive: true, permission: ['dashboard'] }
+        meta: { title: '电子围栏', keepAlive: true, icon: 'heat-map', permission: ['dashboard'] }
       },
       {
         path: '/map/add',
@@ -51,14 +57,14 @@ export const asyncRouterMap = [
         path: '/clock',
         name: 'ClockList',
         hidden: true,
-        component: () => import('@/views/clock/List'),
+        component: () => import('@/views/clock/ListForUser'),
         meta: { title: '乘船记录', keepAlive: true, permission: ['dashboard'] }
       },
       {
         path: '/device',
         name: 'DeviceList',
         component: () => import('@/views/device/List'),
-        meta: { title: '设备管理', keepAlive: true, permission: ['dashboard'] }
+        meta: { title: '设备管理', keepAlive: true, icon: 'medicine-box', permission: ['dashboard'] }
       },
       {
         path: '/device/add',
@@ -73,6 +79,19 @@ export const asyncRouterMap = [
         hidden: true,
         component: () => import('@/views/user/Center'),
         meta: { title: '修改密码', keepAlive: true, permission: ['dashboard'] }
+      },
+      {
+        path: '/admin/list',
+        name: 'adminList',
+        component: () => import('@/views/admin/List'),
+        meta: { title: '管理员管理', keepAlive: true, icon: 'medicine-box', permission: ['dashboard'] }
+      },
+      {
+        path: '/admin/add',
+        name: 'addAdmin',
+        hidden: true,
+        component: () => import('@/views/admin/Add'),
+        meta: { title: '新增管理员', keepAlive: true, permission: ['dashboard'] }
       }
     ]
   },

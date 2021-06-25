@@ -7,7 +7,8 @@ const api = {
   edit: '/admin/user/edit',
   delete: '/admin/user/delete',
   clockList: '/admin/user/clock_list',
-  updatePassword: '/admin/update_password'
+  updatePassword: '/admin/update_password',
+  exportExcel: '/admin/user/export'
 }
 
 export function getUserList (parameter) {
@@ -63,5 +64,14 @@ export function updatePassword (params) {
     url: api.updatePassword,
     method: 'post',
     data: params
+  })
+}
+
+export function exportExcel (params) {
+  return request({
+    url: api.exportExcel,
+    method: 'get',
+    params: params,
+    responseType: 'blob'
   })
 }

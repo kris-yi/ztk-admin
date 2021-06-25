@@ -37,7 +37,6 @@
                 :style="{float:'right',overflow:'hidden'}"
               >
                 <a-button type="primary" @click="onSearch">查询</a-button>
-                <a-button type="primary" style="margin-left: 8px" @click="onExport"> 导出 </a-button>
                 <a-button style="margin-left: 8px" @click="onResetSearch">重置</a-button>
               </span>
             </a-col>
@@ -45,7 +44,7 @@
         </a-form>
       </div>
       <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="()=>{this.$router.push({name:'userAdd'})}">新增</a-button>
+        <a-button type="primary" icon="plus" @click="()=>{this.$router.push({name:'addAdmin'})}">新增</a-button>
       </div>
       <a-table
         :dataSource="tableData.list"
@@ -54,26 +53,15 @@
         :pagination="tableData.pagination"
         :rowKey="(record,index)=>{return index}"
       >
-        <template slot="img" slot-scope="text, record">
-          <img
-            v-if="record.img"
-            :src="domain+record.img"
-            width="100px"
-          />
-          <div v-else>{{ record.ic_card }}</div>
-        </template>
         <template slot="action" slot-scope="text, record">
           <a-icon
-            type="carry-out"
-            :style="{ color: '#1890ff' }"
-            @click="onClockList(record)"
-          />
-          <a-icon
+            v-if="record.name!=='admin'"
             type="edit"
             :style="{ color: '#1890ff' }"
             @click="onEdit(record)"
           />
           <a-popconfirm
+            v-if="record.name!=='admin'"
             title="确定要删除吗？"
             ok-text="是"
             cancel-text="否"
@@ -95,7 +83,7 @@
 </template>
 
 <script>
-import { getUserList, deleteUser, exportExcel } from '@/api/user'
+import { getAdminList, delAdmin } from '@/api/admin'
 
 export default {
   name: 'List',
@@ -104,43 +92,9 @@ export default {
       filter: {
         columns: [
           {
-            prop: 'pin',
-            label: '编号',
+            prop: 'nickname',
+            label: '昵称',
             type: 'input'
-          },
-          {
-            prop: 'name',
-            label: '姓名',
-            type: 'input'
-          },
-          {
-            prop: 'cardId',
-            label: '身份证号',
-            type: 'input'
-          },
-          {
-            prop: 'phone',
-            label: '电话',
-            type: 'input'
-          },
-          {
-            prop: 'status',
-            label: '上岛/离岛',
-            type: 'select',
-            option: [
-              {
-                value: '1',
-                label: '上岛'
-              },
-              {
-                value: '0',
-                label: '离岛'
-              },
-              {
-                value: '-1',
-                label: '未知'
-              }
-            ]
           }
         ],
         data: {}
@@ -148,37 +102,12 @@ export default {
       tableData: {
         column: [
           {
-            title: '编号',
-            dataIndex: 'pin'
-          },
-          {
-            title: '姓名',
+            title: '账户',
             dataIndex: 'name'
           },
           {
-            title: '图片',
-            dataIndex: 'img',
-            scopedSlots: { customRender: 'img' }
-          },
-          {
-            title: '性别',
-            dataIndex: 'sex'
-          },
-          {
-            title: '联系电话',
-            dataIndex: 'phone'
-          },
-          {
-            title: '备用联系电话',
-            dataIndex: 'mobile'
-          },
-          {
-            title: '住址',
-            dataIndex: 'address'
-          },
-          {
-            title: '上岛/离岛',
-            dataIndex: 'status'
+            title: '昵称',
+            dataIndex: 'nickname'
           },
           {
             title: '操作',
@@ -215,7 +144,7 @@ export default {
       const params = this.filter.data
       params.page = this.tableData.pagination.current
       params.limit = this.tableData.pagination.pageSize
-      getUserList(params).then(res => {
+      getAdminList(params).then(res => {
         this.tableData.list = res.data.list
         const pagination = res.data.pagination
         this.tableData.pagination = {
@@ -228,7 +157,7 @@ export default {
     },
     onEdit (record) {
       this.$router.push({
-        path: '/user/add',
+        path: '/admin/add',
         query: {
           id: record.id
         }
@@ -244,10 +173,9 @@ export default {
     handleDelete (record) {
       this.okButtonProps.props.loading = true
       const params = {
-        id: this.visibleId,
-        pin: record.pin
+        id: this.visibleId
       }
-      deleteUser(params).then(res => {
+      delAdmin(params).then(res => {
         if (res.status) {
           this.$notification.error({
             message: res.msg
@@ -261,6 +189,9 @@ export default {
         this.deleteVisible = false
         this.okButtonProps.props.loading = false
         this.getList()
+      }).catch(() => {
+        this.okButtonProps.props.loading = false
+        this.deleteVisible = false
       })
     },
     onClockList (record) {
@@ -277,21 +208,6 @@ export default {
     onResetSearch () {
       this.filter.data = {}
       this.getList()
-    },
-    onExport () {
-      exportExcel(this.filter.data).then(res => {
-        const blob = new Blob([res], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        })
-        const objectUrl = URL.createObjectURL(blob)
-
-        const a = document.createElement('a')
-        a.href = objectUrl
-        // a.click();
-        // 下面这个写法兼容火狐
-        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }))
-        window.URL.revokeObjectURL(blob)
-      })
     }
   }
 }

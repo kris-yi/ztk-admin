@@ -1,12 +1,61 @@
 <template>
   <page-header-wrapper>
     <a-card :bordered="false">
+      <div class="table-page-search-wrapper">
+        <a-form layout="inline">
+          <a-row :gutter="48">
+            <a-col
+              v-for="(item,index) in filter.columns"
+              :key="index"
+              :md="6">
+              <a-form-item
+                :label="item.label"
+              >
+                <a-input
+                  v-if="item.type==='input'"
+                  :placeholder="`请输入${item.label}`"
+                  v-model="filter.data[item.prop]"
+                />
+                <a-select
+                  v-if="item.type==='select'"
+                  :placeholder="`请选择${item.label}`"
+                  v-model="filter.data[item.prop]"
+                >
+                  <a-select-option
+                    v-for="(selectItem,selectIndex) in item.option"
+                    :key="selectIndex"
+                    :value="selectItem.value"
+                  >
+                    {{ selectItem.label }}
+                  </a-select-option>
+                </a-select>
+                <a-range-picker
+                  v-if="item.type==='rangePicker'"
+                  format="YYYY-MM-DD"
+                  v-model="filter.data[item.prop]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :md="24">
+              <span
+                class="table-page-search-submitButtons"
+                :style="{float:'right',overflow:'hidden'}"
+              >
+                <a-button type="primary" @click="onSearch">查询</a-button>
+                <a-button type="primary" style="margin-left: 8px" @click="onExport"> 导出 </a-button>
+                <a-button style="margin-left: 8px" @click="onResetSearch">重置</a-button>
+              </span>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
       <a-table
         :dataSource="tableData.list"
         :loading="tableData.loading"
         :columns="tableData.column"
         :pagination="tableData.pagination"
         :rowKey="(record,index)=>{return index}"
+        @change="onChange"
       >
         <template slot="img" slot-scope="text, record">
           <img
@@ -15,7 +64,9 @@
           />
         </template>
         <template slot="inOrOut" slot-scope="text, record">
-          {{ record.in_or_out || '未知' }}
+          <span v-if="record.in_or_out==='上岛'">岛方向</span>
+          <span v-else-if="record.in_or_out==='离岛'">岸方向</span>
+          <span v-else>未知</span>
         </template>
         <template slot="location" slot-scope="text, record">
           <a-button
@@ -50,7 +101,8 @@
 </template>
 
 <script>
-import { getClockList } from '@/api/user'
+import { getClockList, exportExcel } from '@/api/clock'
+import { getBoatList } from '@/api/device'
 import Amap from '@amap/amap-vue/lib/amap'
 import AmapMarker from '@amap/amap-vue/lib/marker'
 
@@ -66,7 +118,15 @@ export default {
       tableData: {
         column: [
           {
-            title: '图片',
+            title: '编号',
+            dataIndex: 'pin'
+          },
+          {
+            title: '姓名',
+            dataIndex: 'name'
+          },
+          {
+            title: '乘船图片',
             dataIndex: 'img',
             scopedSlots: { customRender: 'img' }
           },
@@ -79,7 +139,7 @@ export default {
             dataIndex: 'sn_remark'
           },
           {
-            title: '上岛/离岛',
+            title: '打卡位置',
             dataIndex: 'in_or_out',
             scopedSlots: { customRender: 'inOrOut' }
           },
@@ -98,37 +158,145 @@ export default {
           current: 1,
           pageSize: 20,
           total: 0
-        }
+        },
+        loading: false
       },
       map: {
         zoom: 17,
         position: [104.066143, 30.573095],
         location: []
+      },
+      filter: {
+        columns: [
+          {
+            prop: 'name',
+            label: '姓名',
+            type: 'input'
+          },
+          {
+            prop: 'device',
+            label: '船只',
+            type: 'select',
+            option: []
+          },
+          {
+            prop: 'inOrOut',
+            label: '位置',
+            type: 'select',
+            option: [
+              {
+                value: '上岛',
+                label: '岛方向'
+              },
+              {
+                value: '离岛',
+                label: '岸方向'
+              }
+            ]
+          },
+          {
+            prop: 'remark',
+            label: '上船/下船',
+            type: 'select',
+            option: [
+              {
+                value: '上船',
+                label: '上船'
+              },
+              {
+                value: '下船',
+                label: '下船'
+              }
+            ]
+          },
+          {
+            prop: 'date',
+            label: '日期',
+            type: 'rangePicker'
+          }
+        ],
+        data: {}
       }
     }
   },
   mounted () {
     this.getList()
+    this.boatList()
   },
   methods: {
-    getList () {
-      const query = this.$route.query
-      if (Object.keys(query).length > 0) {
-        getClockList({ pin: query.pin }).then(res => {
-          this.tableData.list = res.data.list
-          const pagination = res.data.pagination
-          this.tableData.pagination = {
-            current: pagination.page,
-            pageSize: pagination.limit,
-            total: pagination.total
-          }
+    boatList () {
+      this.filter.columns[1].option = []
+      getBoatList().then(res => {
+        res.data.forEach((item, index) => {
+          this.filter.columns[1].option.push({
+            value: item,
+            label: item
+          })
         })
+      })
+    },
+    getList () {
+      this.tableData.loading = true
+      const params = {
+        page: this.tableData.pagination.current,
+        limit: this.tableData.pagination.pageSize,
+        name: this.filter.data.name,
+        device: this.filter.data.device,
+        remark: this.filter.data.remark,
+        inOrOut: this.filter.data.inOrOut,
+        date: this.filter.data.date
       }
+      getClockList(params).then(res => {
+        this.tableData.loading = false
+        this.tableData.list = res.data.list
+        const pagination = res.data.pagination
+        this.tableData.pagination = {
+          current: pagination.page,
+          pageSize: pagination.limit,
+          total: pagination.total
+        }
+      }).catch(() => {
+        this.tableData.loading = false
+      })
     },
     onMap (record) {
       this.visible = true
       this.map.location = [record.lng, record.lat]
       this.map.position = [record.lng, record.lat]
+    },
+    onChange (e) {
+      this.tableData.pagination = e
+      this.getList()
+    },
+    onSearch () {
+      this.tableData.pagination.current = 1
+      this.getList()
+    },
+    onResetSearch () {
+      this.filter.data = {}
+      this.getList()
+    },
+    onExport () {
+      const params = {
+        name: this.filter.data.name,
+        device: this.filter.data.device,
+        remark: this.filter.data.remark,
+        inOrOut: this.filter.data.inOrOut,
+        date: this.filter.data.date
+      }
+      exportExcel(params).then(res => {
+        const blob = new Blob([res], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+        const objectUrl = URL.createObjectURL(blob)
+
+        const a = document.createElement('a')
+        a.href = objectUrl
+        // a.click();
+        // 下面这个写法兼容火狐
+        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }))
+        window.URL.revokeObjectURL(blob)
+      })
     }
   }
 }

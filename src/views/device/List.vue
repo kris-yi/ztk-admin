@@ -139,6 +139,9 @@ export default {
         this.deleteVisible = false
         this.okButtonProps.props.loading = false
         this.getList()
+      }).catch(() => {
+        this.okButtonProps.props.loading = false
+        this.deleteVisible = false
       })
     },
     timer () {

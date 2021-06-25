@@ -1,42 +1,48 @@
 <template>
   <page-header-wrapper>
-    <template v-slot:content>
-      <div class="page-header-content">
-        <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar"/>
-        </div>
-        <div class="content">
-          <div class="content-title">
-            {{ timeFix }}，{{ name }}<span class="welcome-text">，{{ welcome }}</span>
-          </div>
-        </div>
-      </div>
-    </template>
     <div>
       <a-row :gutter="24">
-        <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+        <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
           <a-card
             style="margin-bottom: 24px;padding-bottom: 10px;"
             :bordered="false"
-            title="数据看板"
+            title="今日实时乘船人次"
             :body-style="{ padding: 0 }">
             <div style="margin: 10px 24px;" class="data-board">
-              <a-spin :spinning="chartLoading">
-                <a-col
-                  :xl="6"
-                  :lg="6"
-                  :md="6"
-                  :sm="12"
-                  :xs="24"
-                  v-for="(item,index) in statistics.list"
-                  :key="index"
-                >
-                  <a-statistic
-                    :title="item.label"
-                    :value="statistics.data[item.prop]"
-                  />
-                </a-col>
-              </a-spin>
+              <ant-line :data="statistics.line" id="line1"></ant-line>
+            </div>
+          </a-card>
+        </a-col>
+        <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
+          <a-card
+            style="margin-bottom: 24px;padding-bottom: 10px;"
+            :bordered="false"
+            title="在岛情况"
+            :body-style="{ padding: 0 }">
+            <div style="margin: 10px 24px;" class="data-board">
+              <pie :data="statistics.pie" id="pie1"></pie>
+            </div>
+          </a-card>
+        </a-col>
+        <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
+          <a-card
+            style="margin-bottom: 24px;padding-bottom: 10px;"
+            :bordered="false"
+            title="最近7日乘船人次"
+            :body-style="{ padding: 0 }">
+            <div style="margin: 10px 24px;" class="data-board">
+              <ant-bar :data="statistics.bar" id="bar1"></ant-bar>
+            </div>
+          </a-card>
+        </a-col>
+        <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
+          <a-card
+            style="margin-bottom: 24px;padding-bottom: 10px;"
+            :bordered="false"
+            title="数据统计"
+            :body-style="{ padding: 0 }">
+            <div style="margin: 10px 24px;" class="data-board">
+              <column :data="statistics.column" id="column1"></column>
             </div>
           </a-card>
         </a-col>
@@ -49,16 +55,21 @@
 import { timeFix } from '@/utils/util'
 import { mapActions, mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { ChartCard, Bar } from '@/components'
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN'
-import { statistic } from '@/api/home'
+import { sevenDayClock, statistic, todayClock } from '@/api/home'
+import Pie from './Pie'
+import Column from './Column'
+import antLine from './Line'
+import antBar from './Bar'
 
 export default {
   name: 'Workplace',
   components: {
     PageHeaderWrapper,
-    ChartCard,
-    Bar
+    Pie,
+    Column,
+    antLine,
+    antBar
   },
   data () {
     return {
@@ -67,34 +78,12 @@ export default {
       spinning: false,
       chartLoading: false,
       statistics: {
-        list: [
-          {
-            label: '常住居民数',
-            prop: 'users'
-          },
-          {
-            label: '常住居民今日乘船人数',
-            prop: 'clockToday'
-          },
-          {
-            label: '常住居民离岛情况数',
-            prop: 'leaveUsers'
-          },
-          {
-            label: '常住居民在岛情况数',
-            prop: 'inUsers'
-          },
-          {
-            label: '常住居民未知情况数',
-            prop: 'unknownUsers'
-          },
-          {
-            label: '今日访客数',
-            prop: 'visitors'
-          }
-        ],
-        data: {}
-      }
+        pie: [],
+        column: [],
+        line: [],
+        bar: []
+      },
+      setTimeOutId: ''
     }
   },
   computed: {
@@ -116,14 +105,43 @@ export default {
   mounted () {
     this.GetInfo()
     this.getStatistic()
+    this.getTodayClock()
+    this.getSevenDayClock()
+    this.setTimeOutId = setInterval(() => {
+      this.getStatistic()
+      this.getTodayClock()
+      this.getSevenDayClock()
+    }, 10000)
   },
   methods: {
     ...mapActions(['GetInfo']),
     getStatistic () {
       statistic().then(response => {
-        this.statistics.data = response.data
+        this.statistics.pie = [
+          { type: '离岛', value: response.data.leaveUsers },
+          { type: '在岛', value: response.data.inUsers },
+          { type: '未知', value: response.data.unknownUsers }
+        ]
+        this.statistics.column = [
+          { type: '常住居民', sales: response.data.users },
+          { type: '今日打卡人数', sales: response.data.clockToday },
+          { type: '今日访客数', sales: response.data.visitors }
+        ]
+      })
+    },
+    getTodayClock () {
+      todayClock().then(response => {
+        this.statistics.line = response.data.todayClock
+      })
+    },
+    getSevenDayClock () {
+      sevenDayClock().then(response => {
+        this.statistics.bar = response.data.sevenDayClock
       })
     }
+  },
+  beforeDestroy () {
+    clearTimeout(this.setTimeOutId)
   }
 }
 </script>
