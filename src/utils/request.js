@@ -42,6 +42,13 @@ const errorHandler = (error) => {
         })
         return
       }
+      if (data.message === 'time over') {
+        notification.error({
+          message: '提示',
+          description: '体验时间已用完'
+        })
+        return
+      }
       notification.error({
         message: 'Forbidden',
         description: data.message
