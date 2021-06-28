@@ -13,11 +13,19 @@
 
 <script>
 import { GlobalFooter } from '@ant-design-vue/pro-layout'
+import storage from 'store'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 export default {
   name: 'ProGlobalFooter',
   components: {
     GlobalFooter
+  },
+  beforeCreate () {
+    const token = storage.get(ACCESS_TOKEN)
+    if (!token) {
+      window.location.href = '/user/login'
+    }
   }
 }
 </script>

@@ -8,7 +8,7 @@
 <script>
 import AvatarDropdown from './AvatarDropdown'
 import SelectLang from '@/components/SelectLang'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'RightContent',
@@ -36,8 +36,7 @@ export default {
   },
   data () {
     return {
-      showMenu: true,
-      currentUser: {}
+      showMenu: true
     }
   },
   computed: {
@@ -51,14 +50,18 @@ export default {
       name: (state) => state.user.name,
       welcome: (state) => state.user.welcome,
       avatar: (state) => state.user.avatar
-    })
-  },
-  mounted () {
-    setTimeout(() => {
-      this.currentUser = {
+    }),
+    currentUser () {
+      return {
         name: this.name
       }
-    }, 1500)
+    }
+  },
+  mounted () {
+    this.GetInfo()
+  },
+  methods: {
+    ...mapActions(['GetInfo'])
   }
 }
 </script>

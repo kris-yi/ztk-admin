@@ -14,7 +14,7 @@
           placeholder="请输入帐户名"
           v-decorator="[
             'username',
-            {rules: [{ required: true, message: '请输入帐户名' }], validateTrigger: 'change'}
+            {rules: [{ required: true, message: '请输入帐户名' }], validateTrigger: 'blur'}
           ]"
         >
           <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
@@ -78,7 +78,7 @@ export default {
       const validateFieldsKey = ['username', 'password']
       this.form.validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          const loginParams = { ...values }
+          const loginParams = {}
           loginParams.name = values.username
           loginParams.pwd = values.password
           this.Login(loginParams)
