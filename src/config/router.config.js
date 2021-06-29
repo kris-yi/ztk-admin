@@ -84,7 +84,7 @@ export const asyncRouterMap = [
         path: '/admin/list',
         name: 'adminList',
         component: () => import('@/views/admin/List'),
-        meta: { title: '管理员管理', keepAlive: true, icon: 'medicine-box', permission: ['dashboard'] }
+        meta: { title: '管理员管理', keepAlive: true, icon: 'user', permission: ['dashboard'] }
       },
       {
         path: '/admin/add',

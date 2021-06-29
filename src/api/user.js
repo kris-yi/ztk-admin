@@ -8,7 +8,8 @@ const api = {
   delete: '/admin/user/delete',
   clockList: '/admin/user/clock_list',
   updatePassword: '/admin/update_password',
-  exportExcel: '/admin/user/export'
+  exportExcel: '/admin/user/export',
+  updateUserStatus: '/admin/user/update_status'
 }
 
 export function getUserList (parameter) {
@@ -73,5 +74,13 @@ export function exportExcel (params) {
     method: 'get',
     params: params,
     responseType: 'blob'
+  })
+}
+
+export function updateUserStatus (params) {
+  return request({
+    url: api.updateUserStatus,
+    method: 'post',
+    data: params
   })
 }

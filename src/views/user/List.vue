@@ -62,6 +62,13 @@
           />
           <div v-else>{{ record.ic_card }}</div>
         </template>
+        <template slot="status" slot-scope="text, record">
+          <a-select :default-value="record.status" @change="handleChange($event,record)">
+            <a-select-option :value="1">上岛</a-select-option>
+            <a-select-option :value="0">离岛</a-select-option>
+            <a-select-option :value="-1">未知</a-select-option>
+          </a-select>
+        </template>
         <template slot="action" slot-scope="text, record">
           <a-icon
             type="carry-out"
@@ -95,7 +102,7 @@
 </template>
 
 <script>
-import { getUserList, deleteUser, exportExcel } from '@/api/user'
+import { getUserList, deleteUser, exportExcel, updateUserStatus } from '@/api/user'
 
 export default {
   name: 'List',
@@ -178,7 +185,8 @@ export default {
           },
           {
             title: '上岛/离岛',
-            dataIndex: 'status'
+            dataIndex: 'status',
+            scopedSlots: { customRender: 'status' }
           },
           {
             title: '操作',
@@ -291,6 +299,23 @@ export default {
         // 下面这个写法兼容火狐
         a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }))
         window.URL.revokeObjectURL(blob)
+      })
+    },
+    handleChange (e, record) {
+      const params = {
+        pin: record.pin,
+        status: e
+      }
+      updateUserStatus(params).then(res => {
+        if (res.status) {
+          this.$notification.error({
+            message: '校准失败'
+          })
+          return
+        }
+        this.$notification.success({
+          message: '校准成功'
+        })
       })
     }
   }
