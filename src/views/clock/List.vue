@@ -72,11 +72,13 @@
         </template>
         <template slot="location" slot-scope="text, record">
           <a-button
+            v-if="record.lng && record.lat"
             type="link"
             @click="onMap(record)"
           >
             点击查看
           </a-button>
+          <span v-else>人工校准</span>
         </template>
       </a-table>
       <a-modal

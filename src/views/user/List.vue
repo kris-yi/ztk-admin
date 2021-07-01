@@ -55,6 +55,9 @@
         :rowKey="(record,index)=>{return index}"
         @change="onChange"
       >
+        <template slot="title">
+          总人数：{{ tableData.pagination.total }} 人
+        </template>
         <template slot="img" slot-scope="text, record">
           <img
             v-if="record.img"
