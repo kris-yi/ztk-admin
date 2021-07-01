@@ -143,7 +143,8 @@ export default {
           { required: true, message: '请输入居民姓名', trigger: 'blur' }
         ],
         phone: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' }
+          { required: true, message: '请输入联系电话', trigger: 'blur' },
+          { len: 11, message: '请输入正确的手机号码', trigger: 'blur' }
         ],
         sex: [
           { required: true, message: '请选择性别', trigger: 'blur' }
@@ -197,6 +198,9 @@ export default {
               this.$notification.success({
                 message: '新增成功'
               })
+              setTimeout(() => {
+                this.$router.push('/user/list')
+              }, 1000)
             })
           } else {
             editUser(this.insertForm).then(res => {
