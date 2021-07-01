@@ -9,7 +9,7 @@
         <div class="top">
           <div class="header">
             <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">后台管理</span>
+            <span class="title">中坝岛居民管理系统</span>
           </div>
           <div class="desc"></div>
         </div>
@@ -23,7 +23,7 @@
           <!--            <a href="_self">条款</a>-->
           <!--          </div>-->
           <div class="copyright">
-            Copyright &copy; 2021 vueComponent
+            Copyright &copy; 2021 简阳市壮溪镇中坝岛
           </div>
         </div>
       </div>
