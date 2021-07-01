@@ -63,10 +63,10 @@
           <div v-else>{{ record.ic_card }}</div>
         </template>
         <template slot="status" slot-scope="text, record">
-          <a-select :default-value="parseInt(record.status)" @change="handleChange($event,record)">
-            <a-select-option :value="1">上岛</a-select-option>
-            <a-select-option :value="0">离岛</a-select-option>
-            <a-select-option :value="-1">未知</a-select-option>
+          <a-select :value="record.status.toString()" @change="handleChange($event,record)">
+            <a-select-option value="1">上岛</a-select-option>
+            <a-select-option value="0">离岛</a-select-option>
+            <a-select-option value="-1">未知</a-select-option>
           </a-select>
         </template>
         <template slot="action" slot-scope="text, record">
