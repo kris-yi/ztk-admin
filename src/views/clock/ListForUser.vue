@@ -9,6 +9,9 @@
         :rowKey="(record,index)=>{return index}"
         @change="onChange"
       >
+        <template slot="title">
+          总数：{{ tableData.pagination.total }}
+        </template>
         <template slot="img" slot-scope="text, record">
           <img
             v-if="record.img"
