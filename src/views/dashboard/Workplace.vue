@@ -2,6 +2,30 @@
   <page-header-wrapper>
     <div>
       <a-row :gutter="24">
+        <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+          <a-card
+            style="margin-bottom: 24px;padding-bottom: 10px;"
+            :bordered="false"
+            title="大小中坝常住居民在岛情况"
+            :body-style="{ padding: 0 }">
+            <div style="margin: 10px 24px;" class="data-board">
+              <a-col
+                :xl="8"
+                :lg="8"
+                :md="8"
+                :sm="12"
+                :xs="24"
+                v-for="(item,index) in statistics.over.label"
+                :key="index"
+              >
+                <a-statistic
+                  :title="item.label"
+                  :value="statistics.over.data[item.prop]"
+                />
+              </a-col>
+            </div>
+          </a-card>
+        </a-col>
         <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
           <a-card
             style="margin-bottom: 24px;padding-bottom: 10px;"
@@ -81,7 +105,36 @@ export default {
         pie: [],
         column: [],
         line: [],
-        bar: []
+        bar: [],
+        over: {
+          label: [
+            {
+              label: '小中坝在岛人数',
+              prop: 'smallInUsers'
+            },
+            {
+              label: '小中坝离岛人数',
+              prop: 'smallLeaveUsers'
+            },
+            {
+              label: '小中坝未知情况人数',
+              prop: 'smallUnknownUsers'
+            },
+            {
+              label: '大中坝在岛人数',
+              prop: 'bigInUsers'
+            },
+            {
+              label: '大中坝离岛人数',
+              prop: 'bigLeaveUsers'
+            },
+            {
+              label: '大中坝未知情况人数',
+              prop: 'bigUnknownUsers'
+            }
+          ],
+          data: {}
+        }
       },
       setTimeOutId: ''
     }
@@ -127,6 +180,14 @@ export default {
           { type: '今日打卡人数', sales: response.data.clockToday },
           { type: '今日访客数', sales: response.data.visitors }
         ]
+        this.statistics.over.data = {
+          smallLeaveUsers: response.data.smallLeaveUsers,
+          smallInUsers: response.data.smallInUsers,
+          smallUnknownUsers: response.data.smallUnknownUsers,
+          bigLeaveUsers: response.data.bigLeaveUsers,
+          bigInUsers: response.data.bigInUsers,
+          bigUnknownUsers: response.data.bigUnknownUsers
+        }
       })
     },
     getTodayClock () {

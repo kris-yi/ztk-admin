@@ -53,6 +53,7 @@
         :columns="tableData.column"
         :pagination="tableData.pagination"
         :rowKey="(record,index)=>{return index}"
+        @change="onChange"
       >
         <template slot="img" slot-scope="text, record">
           <img
@@ -61,6 +62,9 @@
             width="100px"
           />
           <div v-else>{{ record.ic_card }}</div>
+        </template>
+        <template slot="belong" slot-scope="text, record">
+          <span>{{ record.belong === 1 ? '小中坝' : '大中坝' }}</span>
         </template>
         <template slot="status" slot-scope="text, record">
           <a-select :value="record.status.toString()" @change="handleChange($event,record)">
@@ -131,6 +135,21 @@ export default {
             type: 'input'
           },
           {
+            prop: 'belong',
+            label: '所属岛',
+            type: 'select',
+            option: [
+              {
+                value: 1,
+                label: '小中坝'
+              },
+              {
+                value: 2,
+                label: '大中坝'
+              }
+            ]
+          },
+          {
             prop: 'status',
             label: '上岛/离岛',
             type: 'select',
@@ -180,6 +199,11 @@ export default {
             dataIndex: 'mobile'
           },
           {
+            title: '所属岛',
+            dataIndex: 'belong',
+            scopedSlots: { customRender: 'belong' }
+          },
+          {
             title: '住址',
             dataIndex: 'address'
           },
@@ -199,7 +223,7 @@ export default {
         list: [],
         pagination: {
           current: 1,
-          pageSize: 20,
+          pageSize: 10,
           total: 0
         },
         loading: false
@@ -301,6 +325,10 @@ export default {
         window.URL.revokeObjectURL(blob)
       })
     },
+    onChange (e) {
+      this.tableData.pagination = e
+      this.getList()
+    },
     handleChange (e, record) {
       const params = {
         pin: record.pin,
@@ -316,6 +344,7 @@ export default {
         this.$notification.success({
           message: '校准成功'
         })
+        this.getList()
       })
     }
   }

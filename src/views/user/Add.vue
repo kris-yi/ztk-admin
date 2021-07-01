@@ -131,6 +131,23 @@ export default {
           wrapperCol: 12
         },
         {
+          label: '所属岛',
+          prop: 'belong',
+          type: 'radio',
+          wrapperCol: 12,
+          option: [
+            {
+              key: 1,
+              value: '小中坝'
+            },
+            {
+              key: 2,
+              value: '大中坝'
+            }
+          ],
+          validate: true
+        },
+        {
           label: '住址',
           prop: 'address',
           type: 'input',
@@ -148,6 +165,9 @@ export default {
         ],
         sex: [
           { required: true, message: '请选择性别', trigger: 'blur' }
+        ],
+        belong: [
+          { required: true, message: '请选择所属岛', trigger: 'blur' }
         ]
       },
       edit: false,
@@ -173,7 +193,8 @@ export default {
             mobile: res.data.mobile,
             address: res.data.address,
             pin: res.data.pin,
-            img: res.data.img
+            img: res.data.img,
+            belong: res.data.belong
           }
           this.imageUrl = process.env.VUE_APP_URL + res.data.img
           this.edit = true

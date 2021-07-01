@@ -7,12 +7,15 @@
         :columns="tableData.column"
         :pagination="tableData.pagination"
         :rowKey="(record,index)=>{return index}"
+        @change="onChange"
       >
         <template slot="img" slot-scope="text, record">
           <img
-            :src="record.img"
+            v-if="record.img"
+            :src="domain+record.img"
             width="100px"
           />
+          <span v-else>无图片</span>
         </template>
         <template slot="inOrOut" slot-scope="text, record">
           <span v-if="record.in_or_out==='上岛'">岛方向</span>
@@ -98,15 +101,17 @@ export default {
         list: [],
         pagination: {
           current: 1,
-          pageSize: 20,
+          pageSize: 10,
           total: 0
-        }
+        },
+        loading: false
       },
       map: {
         zoom: 17,
         position: [104.066143, 30.573095],
         location: []
-      }
+      },
+      domain: process.env.VUE_APP_URL
     }
   },
   mounted () {
@@ -114,9 +119,16 @@ export default {
   },
   methods: {
     getList () {
+      this.tableData.loading = true
       const query = this.$route.query
       if (Object.keys(query).length > 0) {
-        getClockList({ pin: query.pin }).then(res => {
+        const params = {
+          pin: query.pin,
+          page: this.tableData.pagination.current,
+          limit: this.tableData.pagination.pageSize
+        }
+        getClockList(params).then(res => {
+          this.tableData.loading = false
           this.tableData.list = res.data.list
           const pagination = res.data.pagination
           this.tableData.pagination = {
@@ -131,6 +143,10 @@ export default {
       this.visible = true
       this.map.location = [record.lng, record.lat]
       this.map.position = [record.lng, record.lat]
+    },
+    onChange (e) {
+      this.tableData.pagination = e
+      this.getList()
     }
   }
 }

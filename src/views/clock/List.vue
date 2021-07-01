@@ -59,9 +59,11 @@
       >
         <template slot="img" slot-scope="text, record">
           <img
-            :src="record.img"
+            v-if="record.img"
+            :src="domain+record.img"
             width="100px"
           />
+          <span v-else>无图片</span>
         </template>
         <template slot="inOrOut" slot-scope="text, record">
           <span v-if="record.in_or_out==='上岛'">岛方向</span>
@@ -216,7 +218,8 @@ export default {
           }
         ],
         data: {}
-      }
+      },
+      domain: process.env.VUE_APP_URL
     }
   },
   mounted () {
