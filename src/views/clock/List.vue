@@ -81,7 +81,7 @@
           >
             点击查看
           </a-button>
-          <span v-else>人工校准</span>
+          <span v-else>无GPS信息</span>
         </template>
       </a-table>
       <a-modal
