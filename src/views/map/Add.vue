@@ -141,7 +141,7 @@ export default {
       },
       map: {
         zoom: 14,
-        position: [104.066143, 30.573095]
+        position: [104.507568, 30.547164]
       },
       drawer: {
         mode: 'polygon',
