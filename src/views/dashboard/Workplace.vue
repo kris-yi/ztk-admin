@@ -10,9 +10,9 @@
             :body-style="{ padding: 0 }">
             <div style="margin: 10px 24px;" class="data-board">
               <a-col
-                :xl="8"
-                :lg="8"
-                :md="8"
+                :xl="6"
+                :lg="6"
+                :md="6"
                 :sm="12"
                 :xs="24"
                 v-for="(item,index) in statistics.over.label"
@@ -109,6 +109,10 @@ export default {
         over: {
           label: [
             {
+              label: '小中坝总人数',
+              prop: 'smallUsers'
+            },
+            {
               label: '小中坝在岛人数',
               prop: 'smallInUsers'
             },
@@ -119,6 +123,10 @@ export default {
             {
               label: '小中坝未知情况人数',
               prop: 'smallUnknownUsers'
+            },
+            {
+              label: '大中坝总人数',
+              prop: 'bigUsers'
             },
             {
               label: '大中坝在岛人数',
@@ -181,9 +189,11 @@ export default {
           { type: '今日访客数', sales: response.data.visitors }
         ]
         this.statistics.over.data = {
+          smallUsers: response.data.smallUsers,
           smallLeaveUsers: response.data.smallLeaveUsers,
           smallInUsers: response.data.smallInUsers,
           smallUnknownUsers: response.data.smallUnknownUsers,
+          bigUsers: response.data.bigUsers,
           bigLeaveUsers: response.data.bigLeaveUsers,
           bigInUsers: response.data.bigInUsers,
           bigUnknownUsers: response.data.bigUnknownUsers
