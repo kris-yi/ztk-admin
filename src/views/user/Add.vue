@@ -236,7 +236,7 @@ export default {
                 message: '更新成功'
               })
               setTimeout(() => {
-                this.$router.push('/user/list')
+                this.$router.go(-1)
               }, 1000)
             })
           }

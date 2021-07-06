@@ -241,13 +241,33 @@ export default {
         }
       },
       domain: process.env.VUE_APP_URL,
-      uploadLoading: false
+      uploadLoading: false,
+      search: false
     }
   },
   mounted () {
     this.getList()
   },
   methods: {
+    getQueryParameter () {
+      const query = this.$route.query
+      if (Object.keys(query).length > 0) {
+        this.search = true
+        this.tableData.pagination = {
+          current: parseInt(query.current),
+          pageSize: parseInt(query.pageSize),
+          total: parseInt(query.total)
+        }
+        this.filter.data = {
+          pin: query.pin,
+          name: query.name,
+          cardId: query.cardId,
+          phone: query.phone,
+          belong: parseInt(query.belong),
+          status: parseInt(query.status)
+        }
+      }
+    },
     getList () {
       this.tableData.loading = true
       const params = this.filter.data
@@ -262,11 +282,19 @@ export default {
           total: pagination.total
         }
         this.tableData.loading = false
+        let query = {}
+        if (this.search) {
+          query = { ...this.filterData, ...this.tableData.pagination }
+        }
+        this.$router.push({
+          name: 'userList',
+          query: query
+        })
       })
     },
     onEdit (record) {
       this.$router.push({
-        path: '/user/add',
+        name: 'userAdd',
         query: {
           id: record.id
         }
