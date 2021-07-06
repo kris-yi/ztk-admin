@@ -183,6 +183,10 @@ export default {
       tableData: {
         column: [
           {
+            title: '编号',
+            dataIndex: 'pin'
+          },
+          {
             title: '姓名',
             dataIndex: 'name'
           },
@@ -288,7 +292,7 @@ export default {
           query = { ...this.filterData, ...this.tableData.pagination }
         }
         this.$router.push({
-          path: 'userList',
+          name: 'userList',
           query: query
         })
       })
