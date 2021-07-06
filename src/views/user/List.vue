@@ -273,6 +273,7 @@ export default {
       const params = this.filter.data
       params.page = this.tableData.pagination.current
       params.limit = this.tableData.pagination.pageSize
+      this.search = true
       getUserList(params).then(res => {
         this.tableData.list = res.data.list
         const pagination = res.data.pagination
@@ -287,7 +288,7 @@ export default {
           query = { ...this.filterData, ...this.tableData.pagination }
         }
         this.$router.push({
-          name: 'userList',
+          path: 'userList',
           query: query
         })
       })
