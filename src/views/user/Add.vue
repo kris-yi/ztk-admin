@@ -159,10 +159,6 @@ export default {
         name: [
           { required: true, message: '请输入居民姓名', trigger: 'blur' }
         ],
-        phone: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' },
-          { len: 11, message: '请输入正确的手机号码', trigger: 'blur' }
-        ],
         sex: [
           { required: true, message: '请选择性别', trigger: 'blur' }
         ],

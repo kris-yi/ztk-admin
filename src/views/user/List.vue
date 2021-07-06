@@ -250,13 +250,14 @@ export default {
     }
   },
   mounted () {
-    this.getList()
     this.getQueryParameter()
+    this.getList()
   },
   methods: {
     getQueryParameter () {
       const query = this.$route.query
       if (Object.keys(query).length > 0) {
+        console.log(query)
         this.search = true
         this.tableData.pagination = {
           current: parseInt(query.current),
@@ -267,9 +268,13 @@ export default {
           pin: query.pin,
           name: query.name,
           cardId: query.cardId,
-          phone: query.phone,
-          belong: parseInt(query.belong),
-          status: parseInt(query.status)
+          phone: query.phone
+        }
+        if (query.belong) {
+          this.filter.data.belong = parseInt(query.belong)
+        }
+        if (query.status) {
+          this.filter.data.status = parseInt(query.status)
         }
       }
     },
@@ -290,7 +295,7 @@ export default {
         this.tableData.loading = false
         let query = {}
         if (this.search) {
-          query = { ...this.filterData, ...this.tableData.pagination }
+          query = { ...this.filter.data, ...this.tableData.pagination }
         }
         this.$router.push({
           name: 'userList',
