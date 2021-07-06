@@ -46,6 +46,12 @@
       </div>
       <div class="table-operator">
         <a-button type="primary" icon="plus" @click="()=>{this.$router.push({name:'userAdd'})}">新增</a-button>
+        <a-upload
+          :show-upload-list="false"
+          :customRequest="onUpload"
+        >
+          <a-button type="primary" :icon="uploadLoading?'loading':'upload'">导入</a-button>
+        </a-upload>
       </div>
       <a-table
         :dataSource="tableData.list"
@@ -109,7 +115,7 @@
 </template>
 
 <script>
-import { getUserList, deleteUser, exportExcel, updateUserStatus } from '@/api/user'
+import { getUserList, deleteUser, exportExcel, updateUserStatus, importExcel } from '@/api/user'
 
 export default {
   name: 'List',
@@ -177,10 +183,6 @@ export default {
       tableData: {
         column: [
           {
-            title: '编号',
-            dataIndex: 'pin'
-          },
-          {
             title: '姓名',
             dataIndex: 'name'
           },
@@ -238,7 +240,8 @@ export default {
           loading: false
         }
       },
-      domain: process.env.VUE_APP_URL
+      domain: process.env.VUE_APP_URL,
+      uploadLoading: false
     }
   },
   mounted () {
@@ -307,9 +310,11 @@ export default {
       })
     },
     onSearch () {
+      this.tableData.pagination.current = 1
       this.getList()
     },
     onResetSearch () {
+      this.tableData.pagination.current = 1
       this.filter.data = {}
       this.getList()
     },
@@ -346,6 +351,24 @@ export default {
         }
         this.$notification.success({
           message: '校准成功'
+        })
+        this.getList()
+      })
+    },
+    onUpload (event) {
+      this.uploadLoading = true
+      const params = new FormData()
+      params.append('file', event.file)
+      importExcel(params).then(response => {
+        this.uploadLoading = false
+        if (response.status) {
+          this.$notification.error({
+            message: response.msg
+          })
+          return
+        }
+        this.$notification.success({
+          message: '导入成功'
         })
         this.getList()
       })

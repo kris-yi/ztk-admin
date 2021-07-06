@@ -9,7 +9,8 @@ const api = {
   clockList: '/admin/user/clock_list',
   updatePassword: '/admin/update_password',
   exportExcel: '/admin/user/export',
-  updateUserStatus: '/admin/user/update_status'
+  updateUserStatus: '/admin/user/update_status',
+  importExcel: '/admin/user/import'
 }
 
 export function getUserList (parameter) {
@@ -82,5 +83,16 @@ export function updateUserStatus (params) {
     url: api.updateUserStatus,
     method: 'post',
     data: params
+  })
+}
+
+export function importExcel (parameter) {
+  return request({
+    url: api.importExcel,
+    method: 'post',
+    data: parameter,
+    headers: {
+      'Content-type': 'multipart/form-data'
+    }
   })
 }
