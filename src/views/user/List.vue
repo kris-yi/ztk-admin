@@ -251,6 +251,7 @@ export default {
   },
   mounted () {
     this.getList()
+    this.getQueryParameter()
   },
   methods: {
     getQueryParameter () {
