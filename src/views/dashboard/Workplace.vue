@@ -6,7 +6,7 @@
           <a-card
             style="margin-bottom: 24px;padding-bottom: 10px;"
             :bordered="false"
-            title="大小中坝常住居民在岛情况"
+            title="大小中坝常住居民情况"
             :body-style="{ padding: 0 }">
             <div style="margin: 10px 24px;" class="data-board">
               <a-col
@@ -21,6 +21,30 @@
                 <a-statistic
                   :title="item.label"
                   :value="statistics.over.data[item.prop]"
+                />
+              </a-col>
+            </div>
+          </a-card>
+        </a-col>
+        <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+          <a-card
+            style="margin-bottom: 24px;padding-bottom: 10px;"
+            :bordered="false"
+            title="大小中坝访客在岛情况"
+            :body-style="{ padding: 0 }">
+            <div style="margin: 10px 24px;" class="data-board">
+              <a-col
+                :xl="6"
+                :lg="6"
+                :md="6"
+                :sm="12"
+                :xs="24"
+                v-for="(item,index) in statistics.visitor.label"
+                :key="index"
+              >
+                <a-statistic
+                  :title="item.label"
+                  :value="statistics.visitor.data[item.prop]"
                 />
               </a-col>
             </div>
@@ -142,6 +166,19 @@ export default {
             }
           ],
           data: {}
+        },
+        visitor: {
+          label: [
+            {
+              label: '小中坝访客在岛人数',
+              prop: 'smallVisitorUsers'
+            },
+            {
+              label: '大中坝访客在岛人数',
+              prop: 'bigVisitorUsers'
+            }
+          ],
+          data: {}
         }
       },
       setTimeOutId: ''
@@ -197,6 +234,10 @@ export default {
           bigLeaveUsers: response.data.bigLeaveUsers,
           bigInUsers: response.data.bigInUsers,
           bigUnknownUsers: response.data.bigUnknownUsers
+        }
+        this.statistics.visitor.data = {
+          smallVisitorUsers: response.data.smallVisitorUsers,
+          bigVisitorUsers: response.data.bigVisitorUsers
         }
       })
     },

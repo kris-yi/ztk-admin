@@ -6,7 +6,7 @@
       <!--      <a href="javascript:void(0);">@Sendya</a>-->
     </template>
     <template v-slot:copyright>
-      <a href="javascript:void(0);">简阳市壮溪镇中坝岛</a>
+      <a href="javascript:void(0);">东部新区壮溪镇中坝岛</a>
     </template>
   </global-footer>
 </template>
