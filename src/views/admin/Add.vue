@@ -30,9 +30,9 @@
               <a-select-option
                 v-for="(selectItem,selectIndex) in item.option"
                 :key="selectIndex"
-                :value="selectItem.key"
+                :value="selectItem.value"
               >
-                {{ selectItem.value }}
+                {{ selectItem.label }}
               </a-select-option>
             </a-select>
           </a-form-model-item>
@@ -83,6 +83,22 @@ export default {
           prop: 'password',
           type: 'input',
           wrapperCol: 12
+        },
+        {
+          label: '权限组',
+          prop: 'role',
+          type: 'select',
+          wrapperCol: 12,
+          option: [
+            {
+              value: 'manager',
+              label: '管理员'
+            },
+            {
+              value: 'view',
+              label: '工作人员'
+            }
+          ]
         }
       ],
       insertForm: {},
@@ -95,6 +111,9 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' }
+        ],
+        role: [
+          { required: true, message: '请选择权限组', trigger: 'blur' }
         ]
       },
       edit: false,
