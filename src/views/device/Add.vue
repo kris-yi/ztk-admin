@@ -79,11 +79,11 @@ export default {
           option: [
             {
               key: '打卡机',
-              value: '打卡机'
+              value: '人脸识别终端'
             },
             {
               key: 'gps',
-              value: 'GPS'
+              value: '移动通信定位终端'
             }
           ],
           validate: true

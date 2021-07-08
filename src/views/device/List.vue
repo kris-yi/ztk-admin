@@ -11,6 +11,10 @@
         :pagination="tableData.pagination"
         :rowKey="(record,index)=>{return index}"
       >
+        <template slot="type" slot-scope="text, record">
+          <span v-if="record.type==='打卡机'">人脸识别终端</span>
+          <span v-if="record.type==='gps'">移动通信定位终端</span>
+        </template>
         <template slot="online" slot-scope="text, record">
           <a-tag :color="record.online===1 && 'green' || 'red'">
             {{ record.online===1 && '在线' || '离线' }}
@@ -61,7 +65,8 @@ export default {
           },
           {
             title: '设备类型',
-            dataIndex: 'type'
+            dataIndex: 'type',
+            scopedSlots: { customRender: 'type' }
           },
           {
             title: '所属船只',
