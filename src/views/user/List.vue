@@ -77,7 +77,7 @@
         </template>
         <template slot="status" slot-scope="text, record">
           <a-select :value="record.status.toString()" @change="handleChange($event,record)">
-            <a-select-option value="1">上岛</a-select-option>
+            <a-select-option value="1">在岛</a-select-option>
             <a-select-option value="0">离岛</a-select-option>
             <a-select-option value="-1">未知</a-select-option>
           </a-select>
@@ -160,12 +160,12 @@ export default {
           },
           {
             prop: 'status',
-            label: '上岛/离岛',
+            label: '在岛/离岛',
             type: 'select',
             option: [
               {
                 value: '1',
-                label: '上岛'
+                label: '在岛'
               },
               {
                 value: '0',
@@ -217,7 +217,7 @@ export default {
             dataIndex: 'address'
           },
           {
-            title: '上岛/离岛',
+            title: '在岛/离岛',
             dataIndex: 'status',
             scopedSlots: { customRender: 'status' }
           },
