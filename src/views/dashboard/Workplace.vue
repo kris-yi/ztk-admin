@@ -222,7 +222,7 @@ export default {
         ]
         this.statistics.column = [
           { type: '常住居民', sales: response.data.users },
-          { type: '今日打卡人数', sales: response.data.clockToday },
+          { type: '今日乘船人数', sales: response.data.clockToday },
           { type: '今日访客数', sales: response.data.visitors }
         ]
         this.statistics.over.data = {
