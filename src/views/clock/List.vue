@@ -138,13 +138,13 @@ export default {
             dataIndex: 'sn_name'
           },
           {
-            title: '上船/下船',
-            dataIndex: 'sn_remark'
-          },
-          {
-            title: '打卡位置',
+            title: '乘船位置',
             dataIndex: 'in_or_out',
             scopedSlots: { customRender: 'inOrOut' }
+          },
+          {
+            title: '上船/下船',
+            dataIndex: 'sn_remark'
           },
           {
             title: '位置',
