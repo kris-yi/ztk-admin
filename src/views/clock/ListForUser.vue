@@ -76,7 +76,7 @@ export default {
       tableData: {
         column: [
           {
-            title: '图片',
+            title: '乘船图片',
             dataIndex: 'img',
             scopedSlots: { customRender: 'img' }
           },

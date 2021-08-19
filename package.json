@@ -5,6 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && node deploy-prod",
+    "build:dev": "vue-cli-service build --mode development && node deploy-dev",
+    "build:test": "vue-cli-service build --mode test && node deploy-test",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build:preview": "vue-cli-service build --mode preview",
@@ -18,6 +20,7 @@
     "ant-design-vue": "^1.7.5",
     "axios": "^0.19.0",
     "core-js": "^3.1.2",
+    "cross-env": "^7.0.3",
     "enquire.js": "^2.1.6",
     "gh-pages": "^3.2.2",
     "lodash.clonedeep": "^4.5.0",
