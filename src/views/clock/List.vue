@@ -125,10 +125,6 @@ export default {
       tableData: {
         column: [
           {
-            title: '编号',
-            dataIndex: 'pin'
-          },
-          {
             title: '姓名',
             dataIndex: 'name'
           },
